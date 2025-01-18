@@ -1,3 +1,4 @@
+using System.Security.Claims;
 using System.Text;
 using InventoryAuthService.Api.Contracts;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
@@ -21,7 +22,8 @@ public static class ServicesExtensions
                     ValidateIssuerSigningKey = true,
                     ValidIssuer = configuration["Auth:Issuer"],
                     ValidAudience = configuration["Auth:Audience"],
-                    IssuerSigningKey = new SymmetricSecurityKey(secret)
+                    IssuerSigningKey = new SymmetricSecurityKey(secret),
+                    RoleClaimType = ClaimTypes.Role
                 };
                 options.Authority = configuration["Auth:Issuer"];
                 options.SaveToken = true;

@@ -1,12 +1,13 @@
 using FastEndpoints;
 using FluentValidation;
+using FluentValidation.Results;
 using InventoryAuthService.Api.Contracts;
 using InventoryAuthService.Api.Services;
 using Microsoft.AspNetCore.Http.HttpResults;
 
 namespace InventoryAuthService.Api.Endpoints.Auth;
 public class CreateProductEndpoint(AuthSettings authSettings, IAuthService authService, IValidator<LoginRequest> validator)
-    : Endpoint<LoginRequest, Results<Ok<TokenResponse>, BadRequest, ForbidHttpResult>>
+    : Endpoint<LoginRequest, Results<Ok<TokenResponse>, BadRequest<ValidationResult>, ForbidHttpResult>>
 {
     private readonly IAuthService _authService = authService;
     private readonly AuthSettings _authSettings = authSettings;
@@ -28,20 +29,20 @@ public class CreateProductEndpoint(AuthSettings authSettings, IAuthService authS
         });
     }
 
-    public override async Task<Results<Ok<TokenResponse>, BadRequest, ForbidHttpResult>> ExecuteAsync(LoginRequest req, CancellationToken ct)
+    public override async Task<Results<Ok<TokenResponse>, BadRequest<ValidationResult>, ForbidHttpResult>> ExecuteAsync(LoginRequest req, CancellationToken ct)
     {
         var validationResult = await _validator.ValidateAsync(req, ct);
         if (!validationResult.IsValid)
         {
-            return (Results<Ok<TokenResponse>, BadRequest, ForbidHttpResult>)Results.BadRequest(validationResult);
+            return TypedResults.BadRequest(validationResult);
         }
 
         if (req.UserName != _authSettings.UserName || req.Password != _authSettings.Password)
         {
-            return (Results<Ok<TokenResponse>, BadRequest, ForbidHttpResult>)Results.Forbid();
+            return TypedResults.Forbid();
         }
 
         var token = await _authService.GenerateToken(req.UserName);
-        return (Results<Ok<TokenResponse>, BadRequest, ForbidHttpResult>)Results.Ok(token);
+        return TypedResults.Ok(token);
     }
 }
