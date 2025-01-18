@@ -1,0 +1,25 @@
+services:
+  inventoryauthservice:
+    image: inventoryauthservice
+    build:
+      context: .
+      dockerfile: InventoryAuthService.Api/Dockerfile
+    ports:
+      - "${INVENTORYAUTHSERVICE_PORT}:${INVENTORYAUTHSERVICE_PORT}"
+      - "${INVENTORYAUTHSERVICE_PORTALT}:${INVENTORYAUTHSERVICE_PORTALT}"
+    env_file:
+      - ../.env
+    environment:
+      - ASPNETCORE_ENVIRONMENT=Development
+    volumes:
+      - inventoryauthservice-data:/app/Data
+    networks:
+      - shared-network
+
+volumes:
+  inventoryauthservice-data:
+
+networks:
+  shared-network:
+    external: true
+
