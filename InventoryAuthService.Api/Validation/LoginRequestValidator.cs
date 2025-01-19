@@ -3,6 +3,9 @@ using InventoryAuthService.Api.Contracts;
 
 namespace InventoryAuthService.Api.Validation;
 
+/// <summary>
+/// Validator for the <see cref="LoginRequest"/> class.
+/// </summary>
 public class LoginRequestValidator : AbstractValidator<LoginRequest>
 {
     public LoginRequestValidator()

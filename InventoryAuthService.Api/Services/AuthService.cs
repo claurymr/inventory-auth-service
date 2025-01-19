@@ -5,10 +5,16 @@ using InventoryAuthService.Api.Contracts;
 using Microsoft.IdentityModel.Tokens;
 
 namespace InventoryAuthService.Api.Services;
+/// <summary>
+/// AuthService class that implements the IAuthService interface.
+/// Provides functionality to generate JWT tokens.
+/// </summary>
+/// <param name="authSettings">The authentication settings used for generating tokens.</param>
 public class AuthService(AuthSettings authSettings) : IAuthService
 {
     private readonly AuthSettings _authSettings = authSettings;
 
+    /// <inheritdoc/>
     public async Task<TokenResponse> GenerateToken(string userName)
     {
         var tokenHandler = new JwtSecurityTokenHandler();
